@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #2d3748;">Gestión de Usuarios</h2>
+
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('add_user') }}" class="btn btn-success">➕ Añadir Nuevo Usuario</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td><strong>{{ user.username }}</strong></td>
+            <td>{{ user.email or '-' }}</td>
+            <td>
+                {% if user.role == 'superuser' %}
+                    <span class="badge" style="background: #9f7aea; color: white;">Super Usuario</span>
+                {% elif user.role == 'admin' %}
+                    <span class="badge" style="background: #4299e1; color: white;">Admin</span>
+                {% else %}
+                    <span class="badge badge-info">Usuario</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('edit_user', uid=user.id) }}" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">✏ Editar</a>
+                {% if user.id != session.user_id %}
+                <a href="{{ url_for('delete_user', uid=user.id) }}" 
+                   onclick="return confirm('¿Seguro que deseas eliminar al usuario {{ user.username }}?')" 
+                   class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">🗑 Eliminar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" style="text-align: center; padding: 40px; color: #718096;">
+                No hay usuarios registrados
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 30px; padding: 20px; background: #edf2f7; border-radius: 10px;">
+    <h3 style="color: #2d3748; margin-bottom: 15px;">ℹ Roles de Usuario</h3>
+    <ul style="color: #4a5568; line-height: 1.8;">
+        <li><strong>Super Usuario:</strong> Acceso total al sistema, puede gestionar usuarios y todas las configuraciones.</li>
+        <li><strong>Admin:</strong> Puede gestionar personas, cargar datos y enviar notificaciones.</li>
+        <li><strong>Usuario:</strong> Solo puede ver la lista de personas y sus estados.</li>
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #2d3748;">Sistema de Alerta Temprana</h2>
+
+<!-- Estadísticas -->
+<div class="stats">
+    <div class="stat-card">
+        <h3>Total de Personas</h3>
+        <div class="number">{{ stats.total }}</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);">
+        <h3>Próximos a Vencer (30 días)</h3>
+        <div class="number">{{ stats.proximo }}</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);">
+        <h3>Vencidos</h3>
+        <div class="number">{{ stats.vencido }}</div>
+    </div>
+</div>
+
+<!-- Búsqueda y Filtros -->
+<div class="search-bar">
+    <form method="GET" style="display: flex; gap: 10px; width: 100%;">
+        <input type="text" name="q" placeholder="Buscar por nombre, empresa o especialización..." value="{{ q }}">
+        <select name="filtro" onchange="this.form.submit()">
+            <option value="">Todos</option>
+            <option value="proximo" {% if filtro == 'proximo' %}selected{% endif %}>Próximos a Vencer</option>
+            <option value="vencido" {% if filtro == 'vencido' %}selected{% endif %}>Vencidos</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        {% if q or filtro %}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if session.role in ['admin', 'superuser'] %}
+<div style="margin-bottom: 20px; display: flex; gap: 10px;">
+    <a href="{{ url_for('run_check') }}" class="btn btn-success">▶ Ejecutar Chequeo Manual</a>
+</div>
+{% endif %}
+
+<!-- Tabla de Personas -->
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Especialización</th>
+            <th>Fecha Vencimiento</th>
+            <th>Días Restantes</th>
+            <th>Empresa</th>
+            <th>Email</th>
+            <th>Celular</th>
+            {% if session.role in ['admin', 'superuser'] %}
+            <th>Acciones</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in people %}
+        <tr>
+            <td><strong>{{ p.nombre }} {{ p.apellido }}</strong></td>
+            <td>{{ p.especializacion }}</td>
+            <td>{{ p.fecha_vencimiento }}</td>
+            <td>
+                {% if p.dias is not none %}
+                    {% if p.dias < 0 %}
+                        <span class="badge badge-danger">Vencido hace {{ -p.dias }} días</span>
+                        <span class="alert-icon">!</span>
+                    {% elif p.dias == 0 %}
+                        <span class="badge badge-danger">Vence HOY</span>
+                        <span class="alert-icon">!</span>
+                    {% elif p.dias <= 7 %}
+                        <span class="badge badge-danger">{{ p.dias }} días</span>
+                        <span class="alert-icon">!</span>
+                    {% elif p.dias <= 30 %}
+                        <span class="badge badge-warning">{{ p.dias }} días</span>
+                    {% else %}
+                        <span class="badge badge-success">{{ p.dias }} días</span>
+                    {% endif %}
+                {% else %}
+                    <span class="badge badge-info">N/A</span>
+                {% endif %}
+            </td>
+            <td>{{ p.empresa or '-' }}</td>
+            <td>{{ p.email or '-' }}</td>
+            <td>{{ p.celular or '-' }}</td>
+            {% if session.role in ['admin', 'superuser'] %}
+            <td>
+                <a href="{{ url_for('edit', pid=p.id) }}" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">✏ Editar</a>
+                <a href="{{ url_for('delete', pid=p.id) }}" 
+                   onclick="return confirm('¿Seguro que deseas eliminar a {{ p.nombre }} {{ p.apellido }}?')" 
+                   class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">🗑 Eliminar</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="{% if session.role in ['admin', 'superuser'] %}8{% else %}7{% endif %}" style="text-align: center; padding: 40px; color: #718096;">
+                No se encontraron resultados
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 20px; text-align: center; color: #718096; font-size: 14px;">
+    <p>Total de resultados: {{ people|length }}</p>
+</div>
+{% endblock %}

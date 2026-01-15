@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #2d3748;">Cargar Datos desde Excel</h2>
+
+<div style="max-width: 600px; margin: 0 auto;">
+    <div style="background: #f7fafc; padding: 30px; border-radius: 10px; margin-bottom: 30px;">
+        <h3 style="margin-bottom: 15px; color: #2d3748;">1. Cargar desde Excel</h3>
+        <p style="color: #718096; margin-bottom: 20px;">
+            Selecciona un archivo Excel (.xlsx) con los datos de las personas.
+        </p>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Seleccionar Archivo</label>
+                <input type="file" id="file" name="file" accept=".xlsx" required>
+            </div>
+            
+            <button type="submit" class="btn btn-success" style="width: 100%; padding: 12px;">
+                📤 Subir y Cargar Datos
+            </button>
+        </form>
+    </div>
+
+    <div style="background: #edf2f7; padding: 30px; border-radius: 10px;">
+        <h3 style="margin-bottom: 15px; color: #2d3748;">2. Añadir Persona Manualmente</h3>
+        <p style="color: #718096; margin-bottom: 20px;">
+            También puedes añadir personas de forma individual.
+        </p>
+        
+        <a href="{{ url_for('add') }}" class="btn btn-primary" style="width: 100%; padding: 12px; text-align: center; display: block;">
+            ➕ Añadir Persona Manualmente
+        </a>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #bee3f8; border-left: 4px solid #3182ce; border-radius: 5px;">
+        <h4 style="color: #2c5282; margin-bottom: 10px;">ℹ Formato del Excel</h4>
+        <p style="color: #2c5282; font-size: 14px;">
+            El archivo Excel debe contener las siguientes columnas:
+        </p>
+        <ul style="color: #2c5282; font-size: 14px; margin-top: 10px; margin-left: 20px;">
+            <li><strong>nombre</strong></li>
+            <li><strong>apellido</strong></li>
+            <li><strong>especializacion</strong> (ej: Vigilante, Ciberseguridad, etc.)</li>
+            <li><strong>fecha_expedicion</strong> (YYYY-MM-DD o dd/mm/yyyy)</li>
+            <li><strong>fecha_vencimiento</strong> (YYYY-MM-DD o dd/mm/yyyy)</li>
+            <li><strong>escuela</strong></li>
+            <li><strong>empresa</strong></li>
+            <li><strong>email</strong></li>
+            <li><strong>celular</strong></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

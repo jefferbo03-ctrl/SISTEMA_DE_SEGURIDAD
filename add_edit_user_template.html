@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #2d3748;">
+    {% if user %}Editar Usuario{% else %}Añadir Nuevo Usuario{% endif %}
+</h2>
+
+<div style="max-width: 600px; margin: 0 auto;">
+    <form method="POST" style="background: #f7fafc; padding: 30px; border-radius: 10px;">
+        <div class="form-group">
+            <label for="username">Nombre de Usuario *</label>
+            <input type="text" id="username" name="username" 
+                   value="{{ user.username if user else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" 
+                   value="{{ user.email if user else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Contraseña {% if user %}(dejar en blanco para no cambiar){% else %}*{% endif %}</label>
+            <input type="password" id="password" name="password" 
+                   {% if not user %}required{% endif %}>
+        </div>
+
+        <div class="form-group">
+            <label for="role">Rol *</label>
+            <select id="role" name="role" required>
+                <option value="user" {% if user and user.role == 'user' %}selected{% endif %}>Usuario</option>
+                <option value="admin" {% if user and user.role == 'admin' %}selected{% endif %}>Admin</option>
+                <option value="superuser" {% if user and user.role == 'superuser' %}selected{% endif %}>Super Usuario</option>
+            </select>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: flex-end;">
+            <a href="{{ url_for('users') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">
+                {% if user %}💾 Guardar Cambios{% else %}✅ Crear Usuario{% endif %}
+            </button>
+        </div>
+    </form>
+
+    <div style="margin-top: 20px; padding: 15px; background: #bee3f8; border-left: 4px solid #3182ce; border-radius: 5px;">
+        <p style="color: #2c5282; font-size: 14px;">
+            <strong>Nota:</strong> Los campos marcados con (*) son obligatorios.
+        </p>
+    </div>
+</div>
+{% endblock %}

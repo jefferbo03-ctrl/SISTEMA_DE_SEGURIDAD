@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #2d3748;">⚙️ Configuración del Sistema</h2>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <!-- Configuración de Zona Horaria -->
+    <div style="background: #f7fafc; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #2d3748; margin-bottom: 15px;">🌍 Zona Horaria</h3>
+        <p style="color: #718096; margin-bottom: 15px;">
+            Zona horaria actual: <strong>{{ tz }}</strong>
+        </p>
+        <p style="color: #718096; font-size: 14px;">
+            Para cambiar la zona horaria, modifica la variable <code>TIMEZONE</code> en tu archivo <code>.env</code>
+        </p>
+    </div>
+
+    <!-- Días de Alerta -->
+    <div style="background: #f7fafc; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #2d3748; margin-bottom: 15px;">📅 Días de Alerta</h3>
+        <p style="color: #718096; margin-bottom: 15px;">
+            Se enviarán notificaciones cuando falten: <strong>{{ alert_days }}</strong> días para el vencimiento
+        </p>
+        <p style="color: #718096; font-size: 14px;">
+            Para modificar los días de alerta, edita la variable <code>ALERT_DAYS</code> en tu archivo <code>.env</code>
+        </p>
+        <div style="margin-top: 15px; padding: 15px; background: #bee3f8; border-left: 4px solid #3182ce; border-radius: 5px;">
+            <p style="color: #2c5282; font-size: 14px;">
+                <strong>Ejemplo:</strong> ALERT_DAYS=60,30,15,7,1,0
+            </p>
+        </div>
+    </div>
+
+    <!-- Programación de Chequeos -->
+    <div style="background: #f7fafc; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #2d3748; margin-bottom: 15px;">⏰ Programación de Chequeos</h3>
+        <p style="color: #718096; margin-bottom: 15px;">
+            El sistema ejecuta chequeos automáticos todos los días a las <strong>08:00 AM</strong> ({{ tz }})
+        </p>
+        <a href="{{ url_for('run_check') }}" class="btn btn-success">▶ Ejecutar Chequeo Manual Ahora</a>
+    </div>
+
+    <!-- Configuración de Email -->
+    <div style="background: #f7fafc; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #2d3748; margin-bottom: 15px;">📧 Configuración de Email</h3>
+        <p style="color: #718096; margin-bottom: 15px;">
+            Configura las siguientes variables en tu archivo <code>.env</code>:
+        </p>
+        <ul style="color: #718096; font-size: 14px; line-height: 1.8; margin-left: 20px;">
+            <li><code>SMTP_HOST</code> - Servidor SMTP (ej: smtp.gmail.com)</li>
+            <li><code>SMTP_PORT</code> - Puerto SMTP (ej: 587)</li>
+            <li><code>SMTP_USER</code> - Usuario de email</li>
+            <li><code>SMTP_PASSWORD</code> - Contraseña o App Password</li>
+            <li><code>FROM_EMAIL</code> - Email remitente</li>
+        </ul>
+    </div>
+
+    <!-- Configuración de SMS -->
+    <div style="background: #f7fafc; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #2d3748; margin-bottom: 15px;">📱 Configuración de SMS (Twilio)</h3>
+        <p style="color: #718096; margin-bottom: 15px;">
+            Para enviar SMS, configura las siguientes variables en tu archivo <code>.env</code>:
+        </p>
+        <ul style="color: #718096; font-size: 14px; line-height: 1.8; margin-left: 20px;">
+            <li><code>TWILIO_ACCOUNT_SID</code> - Account SID de Twilio</li>
+            <li><code>TWILIO_AUTH_TOKEN</code> - Auth Token de Twilio</li>
+            <li><code>TWILIO_FROM_PHONE</code> - Número de teléfono de Twilio</li>
+        </ul>
+    </div>
+
+    <!-- Estadísticas -->
+    <div style="background: #f7fafc; padding: 30px; border-radius: 10px;">
+        <h3 style="color: #2d3748; margin-bottom: 15px;">📊 Estadísticas</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="padding: 15px; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <p style="color: #718096; font-size: 14px; margin-bottom: 5px;">Total de Notificaciones Enviadas</p>
+                <p style="color: #2d3748; font-size: 28px; font-weight: bold;">{{ notif_count }}</p>
+            </div>
+            <div style="padding: 15px; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <p style="color: #718096; font-size: 14px; margin-bottom: 5px;">Próximo Chequeo Automático</p>
+                <p style="color: #2d3748; font-size: 18px; font-weight: bold;">Mañana 08:00 AM</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
